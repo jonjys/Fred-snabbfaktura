@@ -1,17 +1,207 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8">
-<title>SnabbFaktura</title>
-<meta http-equiv="refresh" content="0;url=https://snabbfaktura.vercel.app/">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SnabbFaktura – Gratis professionell fakturagenerator för Sverige</title>
+  <meta name="description" content="Skapa korrekta svenska fakturor med moms på sekunder. Gratis, privat, ingen registrering." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>body{font-family:Inter,system-ui,sans-serif}.preview-shadow{box-shadow:0 25px 50px -12px rgb(0 0 0/.15)}</style>
 </head>
-<body>
-<p>SnabbFaktura lives at <a href="https://snabbfaktura.vercel.app/">snabbfaktura.vercel.app</a>.</p>
-<p>Full source is deployed on Vercel. Stripe Pro links:</p>
-<ul>
-<li>Monthly: <a href="https://buy.stripe.com/00wcN43XP3oGh16fHv8og00">49 kr/mån</a></li>
-<li>Yearly: <a href="https://buy.stripe.com/4gM4gy65X1gy9yEeDr8og01">490 kr/år</a></li>
-</ul>
-<p>See STRIPE.md and README.md in this repo.</p>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+<header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-2xl">📄</span><span class="font-bold text-xl">SnabbFaktura</span><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Gratis</span></div>
+    <nav class="flex items-center gap-4 text-sm">
+      <a href="#pricing" class="text-slate-600 hover:text-slate-900">Priser</a>
+      <button onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium">Skapa faktura</button>
+    </nav>
+  </div>
+</header>
+<section class="bg-gradient-to-b from-white to-slate-50 border-b border-slate-200">
+  <div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-slate-900 mb-4">Skapa professionella svenska fakturor<br class="hidden sm:block"/> på under 30 sekunder</h1>
+    <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-8">Korrekt moms (25/12/6/0 %), Bankgiro/Swish, organisationsnummer. Allt körs i din webbläsare.</p>
+    <div class="flex flex-wrap justify-center gap-3 text-sm text-slate-500">
+      <span>✓ Ingen registrering</span><span>✓ 100 % privat</span><span>✓ PDF på en sekund</span><span>✓ Fungerar offline</span>
+    </div>
+  </div>
+</section>
+<main id="app" class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-2 gap-8">
+  <div class="space-y-6">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">1</span> Dina uppgifter</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2"><label class="block text-sm font-medium text-slate-700 mb-1">Företagsnamn / Namn *</label><input id="companyName" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="AB Exempel" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Organisationsnummer</label><input id="orgNr" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="556677-8899" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Momsregistreringsnr</label><input id="vatNr" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="SE556677889901" /></div>
+        <div class="sm:col-span-2"><label class="block text-sm font-medium text-slate-700 mb-1">Adress</label><input id="companyAddress" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="Storgatan 1, 111 22 Stockholm" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">E-post</label><input id="companyEmail" type="email" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="hej@exempel.se" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Telefon</label><input id="companyPhone" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="070-123 45 67" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Bankgiro / Plusgiro</label><input id="bankgiro" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="123-4567" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Swish-nummer</label><input id="swish" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="070-123 45 67" /></div>
+      </div>
+      <button onclick="saveCompany()" class="mt-4 text-sm text-emerald-600 font-medium">💾 Spara uppgifter</button>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">2</span> Kund</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2"><label class="block text-sm font-medium text-slate-700 mb-1">Kundnamn *</label><input id="clientName" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="Kund AB" /></div>
+        <div class="sm:col-span-2"><label class="block text-sm font-medium text-slate-700 mb-1">Adress</label><input id="clientAddress" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Org.nr</label><input id="clientOrg" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Referens</label><input id="clientRef" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2" /></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">3</span> Fakturauppgifter</h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Fakturanummer</label><input id="invoiceNr" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2 font-mono" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Fakturadatum</label><input id="invoiceDate" type="date" class="w-full border border-slate-300 rounded-lg px-3 py-2" /></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">Förfallodatum</label><input id="dueDate" type="date" class="w-full border border-slate-300 rounded-lg px-3 py-2" /></div>
+        <div class="sm:col-span-3"><label class="block text-sm font-medium text-slate-700 mb-1">Anteckning</label><textarea id="notes" rows="2" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="Betalning inom 30 dagar."></textarea></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-lg flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">4</span> Rader</h2>
+        <button onclick="addRow()" class="text-sm bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg">+ Lägg till</button>
+      </div>
+      <div id="rows" class="space-y-3"></div>
+      <div class="mt-5 pt-4 border-t space-y-1 text-sm">
+        <div class="flex justify-between text-slate-500"><span>Exkl. moms</span><span id="sumExcl">0,00 kr</span></div>
+        <div class="flex justify-between text-slate-500"><span>Moms</span><span id="sumVat">0,00 kr</span></div>
+        <div class="flex justify-between font-semibold text-base"><span>Att betala</span><span id="sumTotal" class="text-emerald-700">0,00 kr</span></div>
+      </div>
+      <div class="mt-4 flex gap-2">
+        <button onclick="generatePDF()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">⬇️ Ladda ner PDF</button>
+        <button onclick="window.print()" class="px-4 py-3 rounded-xl border border-slate-200">Skriv ut</button>
+      </div>
+      <p id="branding-note" class="text-xs text-slate-400 mt-3 text-center">Gratisversion har branding i PDF-sidfoten. Pro tar bort den.</p>
+    </div>
+  </div>
+  <div class="lg:sticky lg:top-24 h-fit">
+    <h3 class="text-sm font-medium text-slate-500 mb-3">Live förhandsvisning · A4</h3>
+    <div id="preview" class="preview-shadow bg-white rounded-lg overflow-hidden border border-slate-200"></div>
+  </div>
+</main>
+<section id="pricing" class="bg-white border-t border-slate-200 py-16">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <h2 class="text-3xl font-bold mb-3">Enkel prissättning</h2>
+    <p class="text-slate-600 mb-10">Börja gratis. Uppgradera när du behöver mer.</p>
+    <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto text-left">
+      <div class="rounded-2xl border border-slate-200 p-6 bg-slate-50/50">
+        <h3 class="font-bold text-xl mb-1">Gratis</h3>
+        <div class="text-4xl font-extrabold mb-5">0 <span class="text-base font-normal text-slate-500">kr/mån</span></div>
+        <ul class="space-y-2 text-sm text-slate-600 mb-6">
+          <li>✓ Obegränsat antal fakturor</li><li>✓ Alla momssatser</li><li>✓ PDF-nedladdning</li><li>✓ Sparade uppgifter</li><li>✓ Diskret branding</li>
+        </ul>
+        <button onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})" class="w-full border border-slate-300 py-2.5 rounded-xl font-medium">Fortsätt gratis</button>
+      </div>
+      <div class="rounded-2xl border-2 border-emerald-500 p-6 relative bg-white shadow-xl">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-bold px-3 py-1 rounded-full">REKOMMENDERAD</div>
+        <h3 class="font-bold text-xl mb-1">Pro</h3>
+        <div class="text-4xl font-extrabold mb-1">49 <span class="text-base font-normal text-slate-500">kr/mån</span></div>
+        <p class="text-xs text-slate-400 mb-5">eller 490 kr/år</p>
+        <ul class="space-y-2 text-sm text-slate-600 mb-6">
+          <li>✓ Allt i Gratis</li><li>✓ <strong>Ingen branding</strong></li><li>✓ Flera mallar</li><li>✓ Historik</li><li>✓ CSV-export</li>
+        </ul>
+        <button onclick="handlePro()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-semibold">Kom igång med Pro</button>
+      </div>
+    </div>
+    <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center text-sm">
+      <a href="https://buy.stripe.com/00wcN43XP3oGh16fHv8og00" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700">Köp Pro 49 kr/mån →</a>
+      <a href="https://buy.stripe.com/4gM4gy65X1gy9yEeDr8og01" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border-2 border-emerald-600 text-emerald-700 font-medium hover:bg-emerald-50">Köp Pro 490 kr/år →</a>
+    </div>
+    <p class="text-sm text-slate-400 mt-6">Affiliate-partnerskap med Bokio, Fortnox m.fl. ger extra passiv intäkt.</p>
+  </div>
+</section>
+<footer class="bg-slate-900 text-slate-400 py-10 text-sm text-center">
+  <p class="font-semibold text-white mb-1">SnabbFaktura</p>
+  <p class="mb-4">Den enklaste svenska fakturageneratorn.</p>
+  <p>© 2026 SnabbFaktura · <a href="mailto:hej@snabbfaktura.se" class="underline hover:text-white">Kontakt</a></p>
+</footer>
+<script>
+let rows=[{id:1,desc:'',qty:1,price:0,vat:25}];
+function val(id){return document.getElementById(id)?.value?.trim()||''}
+function setVal(id,v){const el=document.getElementById(id);if(el)el.value=v??''}
+function format(n){return (Math.round((n||0)*100)/100).toLocaleString('sv-SE',{minimumFractionDigits:2,maximumFractionDigits:2})+' kr'}
+function escapeHtml(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML}
+function isPro(){return localStorage.getItem('snabbfaktura_pro')==='1'}
+function handlePro(){
+  if(isPro()){alert('Pro är redan aktivt!');return}
+  const c=prompt('Pro: skriv 1 (49 kr/mån), 2 (490 kr/år), eller DEMO');
+  if(!c)return; const x=c.trim().toUpperCase();
+  if(x==='1') location.href='https://buy.stripe.com/00wcN43XP3oGh16fHv8og00';
+  else if(x==='2') location.href='https://buy.stripe.com/4gM4gy65X1gy9yEeDr8og01';
+  else if(x==='DEMO'||x==='PRO2026'){localStorage.setItem('snabbfaktura_pro','1');alert('Pro demo upplåst!');location.reload()}
+}
+function saveCompany(){
+  const data={companyName:val('companyName'),orgNr:val('orgNr'),vatNr:val('vatNr'),companyAddress:val('companyAddress'),companyEmail:val('companyEmail'),companyPhone:val('companyPhone'),bankgiro:val('bankgiro'),swish:val('swish')};
+  localStorage.setItem('snabbfaktura_company',JSON.stringify(data));alert('Sparat!');
+}
+function loadCompany(){try{const data=JSON.parse(localStorage.getItem('snabbfaktura_company')||'{}');Object.keys(data).forEach(k=>setVal(k,data[k]))}catch(e){}}
+function addRow(){rows.push({id:Date.now(),desc:'',qty:1,price:0,vat:25});renderRows();updateTotals();updatePreview()}
+function removeRow(id){if(rows.length<=1)return;rows=rows.filter(r=>r.id!==id);renderRows();updateTotals();updatePreview()}
+function renderRows(){
+  document.getElementById('rows').innerHTML=rows.map((r,i)=>`<div class="grid grid-cols-12 gap-2 items-end">
+    <div class="col-span-5"><input type="text" value="${escapeHtml(r.desc)}" onchange="rows[${i}].desc=this.value;updateTotals();updatePreview()" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-sm" placeholder="Beskrivning"/></div>
+    <div class="col-span-2"><input type="number" min="0" step="0.01" value="${r.qty}" onchange="rows[${i}].qty=parseFloat(this.value)||0;updateTotals();updatePreview()" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-sm"/></div>
+    <div class="col-span-2"><input type="number" min="0" step="0.01" value="${r.price}" onchange="rows[${i}].price=parseFloat(this.value)||0;updateTotals();updatePreview()" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-sm"/></div>
+    <div class="col-span-2"><select onchange="rows[${i}].vat=parseInt(this.value);updateTotals();updatePreview()" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-sm"><option value="25" ${r.vat===25?'selected':''}>25%</option><option value="12" ${r.vat===12?'selected':''}>12%</option><option value="6" ${r.vat===6?'selected':''}>6%</option><option value="0" ${r.vat===0?'selected':''}>0%</option></select></div>
+    <div class="col-span-1"><button onclick="removeRow(${r.id})" class="text-slate-400 hover:text-red-500">×</button></div></div>`).join('');
+}
+function calc(){let sub=0,vat=0;rows.forEach(r=>{const line=(r.qty||0)*(r.price||0);sub+=line;vat+=line*((r.vat||0)/100)});return{sub,vat,total:sub+vat}}
+function updateTotals(){const{sub,vat,total}=calc();document.getElementById('sumExcl').textContent=format(sub);document.getElementById('sumVat').textContent=format(vat);document.getElementById('sumTotal').textContent=format(total)}
+function updatePreview(){
+  const{sub,vat,total}=calc();
+  const lines=rows.map(r=>{const line=(r.qty||0)*(r.price||0);return `<tr class="border-b border-slate-100"><td class="py-2 text-sm">${escapeHtml(r.desc)||'—'}</td><td class="py-2 text-right text-sm">${r.qty}</td><td class="py-2 text-right text-sm">${format(r.price)}</td><td class="py-2 text-right text-sm">${r.vat}%</td><td class="py-2 text-right text-sm font-medium">${format(line)}</td></tr>`}).join('');
+  document.getElementById('preview').innerHTML=`<div class="p-8 min-h-[500px] text-sm">
+    <div class="flex justify-between mb-6"><div><div class="text-xl font-bold text-emerald-700">${escapeHtml(val('companyName'))||'Ditt företag'}</div><div class="text-slate-500 text-xs mt-1">${escapeHtml(val('companyAddress'))}<br>${val('orgNr')?'Org.nr: '+escapeHtml(val('orgNr')):''}</div></div>
+    <div class="text-right"><div class="text-2xl font-extrabold text-emerald-700">FAKTURA</div><div class="text-xs text-slate-500 mt-1">Nr: ${escapeHtml(val('invoiceNr'))||'—'}<br>Datum: ${escapeHtml(val('invoiceDate'))}<br>Förfaller: ${escapeHtml(val('dueDate'))}</div></div></div>
+    <div class="bg-emerald-50 rounded-xl p-3 mb-4"><div class="text-[10px] uppercase text-slate-400 font-semibold">Faktureras till</div><div class="font-semibold">${escapeHtml(val('clientName'))||'Kund'}</div><div class="text-xs text-slate-500">${escapeHtml(val('clientAddress'))}</div></div>
+    <table class="w-full mb-4"><thead><tr class="text-[10px] uppercase text-slate-400 border-b"><th class="text-left py-2">Beskrivning</th><th class="text-right">Antal</th><th class="text-right">À-pris</th><th class="text-right">Moms</th><th class="text-right">Summa</th></tr></thead><tbody>${lines}</tbody></table>
+    <div class="flex justify-end"><div class="w-48 space-y-1"><div class="flex justify-between text-slate-500"><span>Exkl. moms</span><span>${format(sub)}</span></div><div class="flex justify-between text-slate-500"><span>Moms</span><span>${format(vat)}</span></div><div class="flex justify-between font-bold text-emerald-700 border-t pt-1"><span>Att betala</span><span>${format(total)}</span></div></div></div>
+    ${val('notes')?`<div class="mt-4 text-xs text-slate-500">${escapeHtml(val('notes'))}</div>`:''}
+    <div class="mt-4 text-[11px] text-slate-400">${val('bankgiro')?'Bankgiro: '+escapeHtml(val('bankgiro'))+' · ':''}${val('swish')?'Swish: '+escapeHtml(val('swish')):''}</div>
+    ${!isPro()?'<div class="mt-8 text-center text-[10px] text-slate-300">Skapad med SnabbFaktura</div>':''}
+  </div>`;
+}
+function generatePDF(){
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});const{sub,vat,total}=calc();const m=18;let y=18;
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(4,120,87);doc.text(val('companyName')||'Ditt företag',m,y);
+  doc.setFontSize(20);doc.text('FAKTURA',210-m,y,{align:'right'});y+=8;
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100);
+  if(val('companyAddress')){doc.text(val('companyAddress'),m,y);y+=4}if(val('orgNr')){doc.text('Org.nr: '+val('orgNr'),m,y);y+=4}
+  doc.text('Nr: '+(val('invoiceNr')||'—'),210-m,28,{align:'right'});doc.text('Datum: '+(val('invoiceDate')||'—'),210-m,32,{align:'right'});doc.text('Förfaller: '+(val('dueDate')||'—'),210-m,36,{align:'right'});
+  y=Math.max(y,42);
+  doc.setFillColor(248,250,252);doc.roundedRect(m,y,174,18,2,2,'F');
+  doc.setFontSize(8);doc.setTextColor(140);doc.text('FAKTURERAS TILL',m+3,y+5);
+  doc.setTextColor(20);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text(val('clientName')||'Kund',m+3,y+11);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(80);if(val('clientAddress'))doc.text(val('clientAddress'),m+3,y+15);
+  y+=24;
+  doc.autoTable({startY:y,head:[['Beskrivning','Antal','À-pris','Moms','Summa']],body:rows.map(r=>{const line=(r.qty||0)*(r.price||0);return[r.desc||'—',String(r.qty),format(r.price||0),r.vat+'%',format(line)]}),theme:'plain',headStyles:{fillColor:[241,245,249],textColor:[71,85,105],fontStyle:'bold',fontSize:9},bodyStyles:{fontSize:9},columnStyles:{0:{cellWidth:78},1:{halign:'right',cellWidth:20},2:{halign:'right',cellWidth:30},3:{halign:'right',cellWidth:20},4:{halign:'right',cellWidth:28}},margin:{left:m,right:m}});
+  y=doc.lastAutoTable.finalY+8;doc.setFontSize(10);doc.setTextColor(80);
+  doc.text('Summa exkl. moms',135,y);doc.text(format(sub),210-m,y,{align:'right'});y+=5;
+  doc.text('Moms',135,y);doc.text(format(vat),210-m,y,{align:'right'});y+=7;
+  doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(4,120,87);doc.text('Att betala',135,y);doc.text(format(total),210-m,y,{align:'right'});
+  y+=12;doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(80);
+  if(val('notes')){const s=doc.splitTextToSize(val('notes'),174);doc.text(s,m,y);y+=s.length*4+4}
+  if(val('bankgiro')){doc.text('Bankgiro: '+val('bankgiro'),m,y);y+=4}if(val('swish')){doc.text('Swish: '+val('swish'),m,y)}
+  if(!isPro()){doc.setFontSize(8);doc.setTextColor(170);doc.text('Skapad med SnabbFaktura · snabbfaktura.se',105,287,{align:'center'})}
+  doc.save('Faktura-'+(val('invoiceNr')||'utkast')+'.pdf');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  if(new URLSearchParams(location.search).get('pro')==='success'){localStorage.setItem('snabbfaktura_pro','1');history.replaceState({},'',location.pathname);alert('Välkommen till Pro!');}
+  if(isPro()){const n=document.getElementById('branding-note');if(n)n.style.display='none'}
+  const today=new Date().toISOString().split('T')[0];setVal('invoiceDate',today);
+  const due=new Date();due.setDate(due.getDate()+30);setVal('dueDate',due.toISOString().split('T')[0]);
+  if(!val('invoiceNr')){const y=new Date().getFullYear();let s=parseInt(localStorage.getItem('snabbfaktura_seq')||'0',10)+1;localStorage.setItem('snabbfaktura_seq',String(s));setVal('invoiceNr',y+'-'+String(s).padStart(3,'0'))}
+  loadCompany();renderRows();updateTotals();updatePreview();
+  document.querySelectorAll('input,select,textarea').forEach(el=>el.addEventListener('input',()=>{updateTotals();updatePreview()}));
+});
+</script>
 </body>
 </html>
