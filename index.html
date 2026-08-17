@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>SnabbFaktura — Loading…</title>
+<title>SnabbFaktura</title>
 <style>
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
 font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0}
@@ -18,20 +18,20 @@ border-radius:50%;animation:s .7s linear infinite;margin:0 auto 1rem}
 <script>
 (async()=>{
   try{
-    const n=9;
+    const n=4;
     let b64='';
     for(let i=0;i<n;i++){
       const r=await fetch('./parts/p'+i+'.txt');
       if(!r.ok) throw new Error('part '+i);
       b64+=await r.text();
     }
-    const bin=atob(b64);
-    const bytes=new Uint8Array(bin.length);
-    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
-    const html=new TextDecoder().decode(bytes);
+    const bin=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+    const ds=new DecompressionStream('gzip');
+    const stream=new Response(bin).body.pipeThrough(ds);
+    const html=await new Response(stream).text();
     document.open();document.write(html);document.close();
   }catch(e){
-    document.body.innerHTML='<div class="box"><p>Load failed. <a href="https://github.com/jonjys/Fred-snabbfaktura" style="color:#2dd4bf">GitHub</a></p><pre style="color:#f87171;font-size:12px">'+e+'</pre></div>';
+    document.body.innerHTML='<div class="box"><p style="color:#f87171">Load failed</p><pre style="font-size:11px;color:#94a3b8">'+e+'</pre><p><a href="https://github.com/jonjys/Fred-snabbfaktura" style="color:#2dd4bf">GitHub</a></p></div>';
   }
 })();
 </script>
