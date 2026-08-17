@@ -1,32 +1,18 @@
 <!DOCTYPE html>
-<html lang="sv">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>SnabbFaktura — v2.1 klar</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-6">
-<div class="max-w-lg text-center space-y-5">
-<div class="text-5xl">◈</div>
-<h1 class="text-3xl font-bold tracking-tight">SnabbFaktura v2.1</h1>
-<p class="text-slate-400 leading-relaxed">Den fulla appen (QR-kod, Noir-mall, confetti, 6 språk, 18 valutor) är byggd och ligger i build-artifacts.</p>
-<div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 text-left text-sm space-y-2">
-<p class="font-semibold text-teal-400">Så här går du live (30 sek):</p>
-<ol class="list-decimal list-inside space-y-1 text-slate-300">
-<li>Ladda ner <code class="text-teal-300">index.html</code> från artifacts</li>
-<li>Öppna GitHub-repot → Replace file</li>
-<li>Vercel auto-deployar → snabbfaktura.vercel.app</li>
-</ol>
-</div>
-<ul class="text-left text-sm text-slate-400 space-y-1 max-w-sm mx-auto">
-<li>✓ 6 språk · 18 valutor · 18 momsprofiler</li>
-<li>✓ 6 mallar (inkl. Noir) · Logo · Accent</li>
-<li>✓ QR på PDF · Confetti · Historik</li>
-<li>✓ Stripe Pro 49 SEK/mån · DEMO-kod</li>
-</ul>
-<a href="https://github.com/jonjys/Fred-snabbfaktura" class="inline-block text-teal-400 underline text-sm">Öppna GitHub-repot →</a>
-<p class="text-xs text-slate-600">Pro demo: skriv DEMO i Pro-prompten</p>
-</div>
-</body>
-</html>
+<html><head><meta charset="UTF-8"/><title>SnabbFaktura</title></head>
+<body style="margin:0;background:#0f172a;color:#e2e8f0;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh">
+<div id="m">Loading…</div>
+<script>
+(async()=>{
+  try{
+    let h='';
+    for(let i=0;i<3;i++){
+      const r=await fetch('./parts/raw'+i+'.txt');
+      if(!r.ok) throw new Error('part '+i);
+      h+=await r.text();
+    }
+    document.open();document.write(h);document.close();
+  }catch(e){document.getElementById('m').textContent=String(e)}
+})();
+</script>
+</body></html>
