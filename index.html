@@ -3,21 +3,37 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>SnabbFaktura — Loading full app…</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>SnabbFaktura — Loading…</title>
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0}
+.box{text-align:center;padding:2rem}
+.spin{width:28px;height:28px;border:3px solid #334155;border-top-color:#14b8a6;
+border-radius:50%;animation:s .7s linear infinite;margin:0 auto 1rem}
+@keyframes s{to{transform:rotate(360deg)}}
+</style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-6">
-<div class="max-w-lg text-center space-y-5">
-<div class="text-5xl">◈</div>
-<h1 class="text-3xl font-bold tracking-tight">SnabbFaktura v2.1</h1>
-<p class="text-slate-400 leading-relaxed">Full international build is ready in the repo artifacts.<br/>Upload <code class="text-teal-400">index.html</code> from the build folder to replace this page.</p>
-<ul class="text-left text-sm text-slate-300 space-y-1 max-w-sm mx-auto">
-<li>✓ 6 languages · 18 currencies · 18 tax profiles</li>
-<li>✓ 6 templates including Noir</li>
-<li>✓ QR code on PDF · confetti · logo · accent</li>
-<li>✓ Stripe Pro 49 SEK/mo</li>
-</ul>
-<a href="https://github.com/jonjys/Fred-snabbfaktura" class="inline-block mt-2 text-teal-400 underline text-sm">Open GitHub repo</a>
-</div>
+<body>
+<div class="box"><div class="spin"></div><div>Loading SnabbFaktura…</div></div>
+<script>
+(async()=>{
+  try{
+    const n=9;
+    let b64='';
+    for(let i=0;i<n;i++){
+      const r=await fetch('./parts/p'+i+'.txt');
+      if(!r.ok) throw new Error('part '+i);
+      b64+=await r.text();
+    }
+    const bin=atob(b64);
+    const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    const html=new TextDecoder().decode(bytes);
+    document.open();document.write(html);document.close();
+  }catch(e){
+    document.body.innerHTML='<div class="box"><p>Load failed. <a href="https://github.com/jonjys/Fred-snabbfaktura" style="color:#2dd4bf">GitHub</a></p><pre style="color:#f87171;font-size:12px">'+e+'</pre></div>';
+  }
+})();
+</script>
 </body>
 </html>
