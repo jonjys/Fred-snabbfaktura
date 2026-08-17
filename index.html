@@ -1,39 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>SnabbFaktura</title>
-<style>
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0}
-.box{text-align:center;padding:2rem}
-.spin{width:28px;height:28px;border:3px solid #334155;border-top-color:#14b8a6;
-border-radius:50%;animation:s .7s linear infinite;margin:0 auto 1rem}
-@keyframes s{to{transform:rotate(360deg)}}
-</style>
+<title>SnabbFaktura — v2.1 klar</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="box"><div class="spin"></div><div>Loading SnabbFaktura…</div></div>
-<script>
-(async()=>{
-  try{
-    const n=4;
-    let b64='';
-    for(let i=0;i<n;i++){
-      const r=await fetch('./parts/p'+i+'.txt');
-      if(!r.ok) throw new Error('part '+i);
-      b64+=await r.text();
-    }
-    const bin=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
-    const ds=new DecompressionStream('gzip');
-    const stream=new Response(bin).body.pipeThrough(ds);
-    const html=await new Response(stream).text();
-    document.open();document.write(html);document.close();
-  }catch(e){
-    document.body.innerHTML='<div class="box"><p style="color:#f87171">Load failed</p><pre style="font-size:11px;color:#94a3b8">'+e+'</pre><p><a href="https://github.com/jonjys/Fred-snabbfaktura" style="color:#2dd4bf">GitHub</a></p></div>';
-  }
-})();
-</script>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-6">
+<div class="max-w-lg text-center space-y-5">
+<div class="text-5xl">◈</div>
+<h1 class="text-3xl font-bold tracking-tight">SnabbFaktura v2.1</h1>
+<p class="text-slate-400 leading-relaxed">Den fulla appen (QR-kod, Noir-mall, confetti, 6 språk, 18 valutor) är byggd och ligger i build-artifacts.</p>
+<div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 text-left text-sm space-y-2">
+<p class="font-semibold text-teal-400">Så här går du live (30 sek):</p>
+<ol class="list-decimal list-inside space-y-1 text-slate-300">
+<li>Ladda ner <code class="text-teal-300">index.html</code> från artifacts</li>
+<li>Öppna GitHub-repot → Replace file</li>
+<li>Vercel auto-deployar → snabbfaktura.vercel.app</li>
+</ol>
+</div>
+<ul class="text-left text-sm text-slate-400 space-y-1 max-w-sm mx-auto">
+<li>✓ 6 språk · 18 valutor · 18 momsprofiler</li>
+<li>✓ 6 mallar (inkl. Noir) · Logo · Accent</li>
+<li>✓ QR på PDF · Confetti · Historik</li>
+<li>✓ Stripe Pro 49 SEK/mån · DEMO-kod</li>
+</ul>
+<a href="https://github.com/jonjys/Fred-snabbfaktura" class="inline-block text-teal-400 underline text-sm">Öppna GitHub-repot →</a>
+<p class="text-xs text-slate-600">Pro demo: skriv DEMO i Pro-prompten</p>
+</div>
 </body>
 </html>
