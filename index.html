@@ -1,1 +1,34 @@
-<PLACEHOLDER>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SnabbFaktura</title>
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0}
+.box{text-align:center;padding:2rem}
+.spin{width:28px;height:28px;border:3px solid #334155;border-top-color:#14b8a6;
+border-radius:50%;animation:s .7s linear infinite;margin:0 auto 1rem}
+@keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="box"><div class="spin"></div><div id="msg">Loading SnabbFaktura…</div></div>
+<script>
+(async()=>{
+  try{
+    const parts=["H4sIACjJgmoC/+29aW8jSZYg+D1+hZXycLLCSdF5SBQVVJTOTGVESCpJEVWZUYEKJ91IesjpznR3SmIoBBQa2NkuYIFddM92Y4AGZhqd2dOJnQG2MUD3Tm+jP5QwfyR+wf6Efc8OdzOnOyVFZlZXDToPyg9zO569+5k9e/STncPt0y+PdskoHnsbDx7hH+LZ/rC7RP0lfEBtB/6MaWyT/sgOIxp3l56f7lXaS8vyuW+PaXfp3KUXkyCMl0g/8GPqQ7kL14lHXYeeu31aYTem67uxa3uVqG97tGuxSmI39ujGiW/3env2WTwNbfL+N/+ebFF7GruDqUdc/zyAKiK4II0aiSi04ETkd/9IPvOCnu09WuZVaP1xaNQP3UnsBr7Spe2Q2jElUTz1fdcfkkkYDGgUQSFbb8f2Z6Q/DUPq92dw4zCoTO0hrRKrVvsEPnTPoSaTDEIKv35AInfoTydVcrSzhxUEPiV9z+2fVcnW1PViMghCVhgq6tMwIhdB6DkAFVrNgjIe0TGt9AMvCJWuf1Rz1pptDnc+NBKF/e7SKI4nUWd5ue/41dh2vQvXd/pRVO0H46WNR8u8aPLNxgNZBgr4A3fYvXpAiGOHZ88Ch3aMvmdHkWHCM9aLDr4lhF5CHxxxQwjrWpTcEhjvWeeqVesYHw3aA3vQN0wAEt5Zg9ZgzTDr7I7WaXtQM8wGu+v3nBa1DLPJ7taadqPXNswWu1tprjbbPcNcYXfN1VZrBWpZZXeNRtNqtQyzze4sWl9rQMk1dlcbWKt1G+5YX2r1"];
+    const b64=parts.join('');
+    const bin=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+    const ds=new DecompressionStream('gzip');
+    const stream=new Response(bin).body.pipeThrough(ds);
+    const html=await new Response(stream).text();
+    document.open();document.write(html);document.close();
+  }catch(e){
+    document.getElementById('msg').innerHTML='<p style="color:#f87171">Load failed</p><pre style="font-size:11px;color:#94a3b8;text-align:left;max-width:90vw;overflow:auto">'+e+'</pre>';
+  }
+})();
+</script>
+</body>
+</html>
