@@ -18,7 +18,7 @@ border-radius:50%;animation:s .7s linear infinite;margin:0 auto 1rem}
 <script>
 (async()=>{
   try{
-    const urls = ['parts/p0.txt','parts/p1.txt','parts/p2.txt','parts/p3.txt','parts/p4.txt','parts/p5.txt','parts/p6.txt'];
+    const urls = ['parts/c00.txt', 'parts/c01.txt', 'parts/c02.txt', 'parts/c03.txt', 'parts/c04.txt', 'parts/c05.txt', 'parts/c06.txt', 'parts/c07.txt', 'parts/c08.txt', 'parts/c09.txt', 'parts/c10.txt', 'parts/c11.txt', 'parts/c12.txt', 'parts/c13.txt', 'parts/c14.txt', 'parts/c15.txt', 'parts/c16.txt', 'parts/c17.txt', 'parts/c18.txt', 'parts/c19.txt', 'parts/c20.txt', 'parts/c21.txt', 'parts/c22.txt', 'parts/c23.txt', 'parts/c24.txt', 'parts/c25.txt', 'parts/c26.txt', 'parts/c27.txt', 'parts/c28.txt', 'parts/c29.txt', 'parts/c30.txt', 'parts/c31.txt', 'parts/c32.txt', 'parts/c33.txt', 'parts/c34.txt'];
     const texts = await Promise.all(urls.map(u => fetch(u).then(r => { if(!r.ok) throw new Error(u+' '+r.status); return r.text(); })));
     const b64 = texts.join('');
     const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
