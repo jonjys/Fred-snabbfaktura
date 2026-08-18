@@ -1,0 +1,17 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://fred-platform.vercel.app https://fred-platform-feffelito-s-projects.vercel.app https://fred-platform-git-main-feffelito-s-projects.vercel.app http://localhost:3000 http://127.0.0.1:3000"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ]
+}

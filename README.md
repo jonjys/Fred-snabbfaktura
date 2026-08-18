@@ -1,31 +1,46 @@
-# SnabbFaktura
+# SnabbFaktura / Fred Invoice
 
-Beautiful invoices in 30 seconds. **Global · Private · Fast.**
+Beautiful invoices in 30 seconds. Now with a real backend so Fred `/core/invoice` is auto-signed-in.
 
-**Live:** https://snabbfaktura.vercel.app
+**Live:** https://snabbfaktura.vercel.app  
+**Fred iframe:** https://fred-platform.vercel.app/core/invoice → `/api/invoice-proxy` → this app’s `/api/*`
 
-## v2.1 — Wow upgrade
+## What `/core/invoice` talks to
 
-- **6 languages:** EN · SV · DE · FR · ES · NO
-- **18 currencies** with proper locale formatting
-- **18 tax profiles** (SE, NO, DK, DE, UK, US, EU, FR, ES, IT, NL…)
-- **6 templates:** Classic, Minimal, Bold, Elegant, Modern, **Noir** (Pro)
-- **Logo upload** + **accent color** (Pro)
-- **QR code** on preview + PDF for payment ID (IBAN / Swish / PayPal…)
-- **Confetti** on PDF download
-- Units on line items, discount, history + duplicate, CSV export, clear form
-- Dark mode · 100% client-side
+Fred’s same-origin proxy forwards the logged-in Supabase Bearer token to:
 
-## Pro — 49 SEK/mo or 490 SEK/yr
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/` | Iframe UI (invoice list + create) |
+| GET | `/api/health` | Liveness (no auth) |
+| GET | `/api/auth/me` | Current Fred user |
+| POST | `/api/auth/logout` | Clear `sf_session` |
+| GET | `/api/invoices` | List current user’s invoices |
+| POST | `/api/invoices` | Create |
+| GET/PUT/DELETE | `/api/invoices/:id` | Read / update / delete |
 
-- Monthly: https://buy.stripe.com/00wcN43XP3oGh16fHv8og00
-- Yearly: https://buy.stripe.com/4gM4gy65X1gy9yEeDr8og01
-- Demo unlock: type `DEMO` in the Pro prompt
+All iframe fetches use **relative** paths (`invoices`, `auth/me`) so they stay on `/api/invoice-proxy/*` and keep the session.
 
-## Deploy the full app
+## Auth
 
-The complete `index.html` (~73 KB) lives in the build artifacts. Upload it to this repo (replace the placeholder) so Vercel picks it up, or drag-drop into the Vercel project dashboard.
+Same Supabase project as fred-platform: `https://xaszyzqcxrvbbbkebqxj.supabase.co`.
 
-## Stack
+Fred attaches `Authorization: Bearer <access_token>`. We verify it against `/auth/v1/user`. No second login.
 
-Single-file static HTML + Tailwind CDN + jsPDF + QRCode · Vercel.
+## Storage
+
+1. Dedicated `public.invoices` table if you run `sql/invoices.sql` in the Supabase SQL editor.
+2. Otherwise invoices live in `companies.metadata.invoices` (already in the Fred schema) — works immediately, no migration.
+
+## Iframe
+
+`vercel.json` sets `Content-Security-Policy: frame-ancestors` for `fred-platform.vercel.app` (and local `:3000`). `X-Frame-Options` is intentionally omitted.
+
+## Standalone creator
+
+`index.html` is still the public 30-second invoice creator (client-side PDF). The Fred-embedded product is the `/api/` app.
+
+## Pro
+
+- Monthly 49 SEK: https://buy.stripe.com/00wcN43XP3oGh16fHv8og00
+- Yearly 490 SEK: https://buy.stripe.com/4gM4gy65X1gy9yEeDr8og01
