@@ -21,8 +21,8 @@ module.exports = async function handler(req, res) {
 
   return json(req, res, 200, {
     ok: true,
-    service: "snabbfaktura",
-    version: "3.1.0",
+    service: "invoic",
+    version: "3.2.0",
     supabase: SUPABASE_URL,
     supabaseOk,
     supabaseStatus,
