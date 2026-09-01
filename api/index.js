@@ -15,9 +15,9 @@ module.exports = async function handler(req, res) {
   const user = await getUser(req);
 
   if (wantsJson) {
-    if (!user) return json(req, res, 401, { error: "Unauthorized", service: "snabbfaktura" });
+    if (!user) return json(req, res, 401, { error: "Unauthorized", service: "invoic" });
     return json(req, res, 200, {
-      service: "snabbfaktura",
+      service: "invoic",
       authenticated: true,
       user: { id: user.id, email: user.email || null },
     });

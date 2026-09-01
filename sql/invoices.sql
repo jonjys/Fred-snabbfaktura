@@ -1,5 +1,4 @@
--- Optional dedicated invoices table for SnabbFaktura / Fred Invoice.
--- Same Supabase project as fred-platform (xaszyzqcxrvbbbkebqxj).
+-- Optional dedicated invoices table for Invo.
 -- The API works WITHOUT this table: it falls back to companies.metadata.invoices.
 -- Run in Supabase SQL editor if you want a first-class invoices table + RLS.
 
