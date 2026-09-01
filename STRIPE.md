@@ -6,3 +6,6 @@
 
 Product: prod_V4d4dxyl04x2Ne
 Prices: price_1U4TosBEo0Yzuylwc2y9WlAT (month), price_1U4TotBEo0YzuylwNr7bM5V9 (year)
+
+Webhook (optional): `POST https://snabbfaktura.vercel.app/api/stripe/webhook`
+Vercel env: `STRIPE_WEBHOOK_SECRET` (+ `STRIPE_SECRET_KEY` if you later attach customers).
